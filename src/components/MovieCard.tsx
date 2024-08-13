@@ -19,7 +19,7 @@ const MovieCard: React.FC<{ movie: any }> = ({ movie }) => {
         sx={{
           transition: "transform .2s ease-in-out",
           margin: "0 auto",
-          height: 250,
+          height: { xs: 130, sm: 170, md: 210, lg: 250 },
           width: "100%",
           objectFit: "cover",
         }}

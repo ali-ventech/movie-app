@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CircularProgress, Box, ImageList, ImageListItem } from "@mui/material";
 import MovieCard from "./MovieCard";
 import axios from "axios";
+import { Loader } from "../mui/styles";
 
 const MovieList: React.FC = () => {
   const [movies, setMovies] = useState<any[]>([]);
@@ -25,7 +26,7 @@ const MovieList: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <CircularProgress />;
+    return <Loader />;
   }
 
   if (!movies.length) {
@@ -50,7 +51,7 @@ const MovieList: React.FC = () => {
         <ImageListItem
           key={movie.id}
           sx={{
-            minWidth: 150,
+            minWidth: { xs: 80, sm: 100, md: 120, lg: 150 },
             transition: "transform 0.3s, height 0.3s",
             "&:hover": {
               transform: "scale(1.2)",
