@@ -28,7 +28,7 @@ const App: React.FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/movie/:id" element={<MovieDetailsPage />} />
         </Routes>
-        <Footer />
+        {/* <Footer /> */}
       </Router>
     </ThemeProvider>
   );

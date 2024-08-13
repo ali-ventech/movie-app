@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Box, TextField, Autocomplete } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { addMovieToHistory } from "../redux/slices/searchHistorySlice";
 
 interface Movie {
   id: number;
@@ -12,11 +14,19 @@ interface Movie {
 const SearchBar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (searchTerm) {
-      const fetchSearchResults = async () => {
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+      }
+
+      const newTimeout = setTimeout(async () => {
         try {
           const response = await axios.get(
             `https://yts.mx/api/v2/list_movies.json?query_term=${searchTerm}`
@@ -25,9 +35,9 @@ const SearchBar: React.FC = () => {
         } catch (error) {
           console.error("Error fetching search results:", error);
         }
-      };
+      }, 1000);
 
-      fetchSearchResults();
+      setTypingTimeout(newTimeout);
     } else {
       setSearchResults([]);
     }
@@ -42,6 +52,7 @@ const SearchBar: React.FC = () => {
       navigate(`/movie/${value.id}`);
       setSearchTerm("");
       setSearchResults([]);
+      dispatch(addMovieToHistory(value));
     }
   };
 

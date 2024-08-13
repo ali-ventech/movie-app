@@ -1,12 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { CircularProgress, Box, ImageList, ImageListItem } from "@mui/material";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../redux/store";
+import { ImageList, ImageListItem } from "@mui/material";
 import MovieCard from "./MovieCard";
 import axios from "axios";
-import { Loader } from "../mui/styles";
+import { setInitialMovies } from "../redux/slices/searchHistorySlice";
+
+interface Movie {
+  id: number;
+  title: string;
+}
 
 const MovieList: React.FC = () => {
-  const [movies, setMovies] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const dispatch = useDispatch();
+  const initialFetched = useSelector(
+    (state: RootState) => state.searchHistory.initialFetched
+  );
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -14,24 +23,18 @@ const MovieList: React.FC = () => {
         const response = await axios.get(
           "https://yts.mx/api/v2/list_movies.json"
         );
-        setMovies(response.data.data.movies.slice(0, 10) || []);
+        const movies: Movie[] = response.data.data.movies.slice(0, 10) || [];
+        dispatch(setInitialMovies(movies));
       } catch (error) {
         console.error("Error fetching movies:", error);
-      } finally {
-        setLoading(false);
       }
     };
+    if (!initialFetched) {
+      fetchMovies();
+    }
+  }, [dispatch, initialFetched]);
 
-    fetchMovies();
-  }, []);
-
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (!movies.length) {
-    return <div>No movies available</div>;
-  }
+  const movies = useSelector((state: RootState) => state.searchHistory.movies);
 
   return (
     <ImageList
@@ -47,11 +50,10 @@ const MovieList: React.FC = () => {
         paddingTop: 4,
       }}
     >
-      {movies.map((movie) => (
+      {movies.map((movie: Movie) => (
         <ImageListItem
           key={movie.id}
           sx={{
-            minWidth: { xs: 80, sm: 100, md: 120, lg: 150 },
             transition: "transform 0.3s, height 0.3s",
             "&:hover": {
               transform: "scale(1.2)",
