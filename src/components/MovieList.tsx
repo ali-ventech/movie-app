@@ -4,11 +4,12 @@ import { RootState } from "../redux/store";
 import { ImageList, ImageListItem } from "@mui/material";
 import MovieCard from "./MovieCard";
 import axios from "axios";
-import { setInitialMovies } from "../redux/slices/searchHistorySlice";
+import { setInitialMovies } from "../redux/slices/movieSlice";
 
 interface Movie {
   id: number;
   title: string;
+  medium_cover_image: string;
 }
 
 const MovieList: React.FC = () => {
@@ -36,37 +37,7 @@ const MovieList: React.FC = () => {
 
   const movies = useSelector((state: RootState) => state.searchHistory.movies);
 
-  return (
-    <ImageList
-      sx={{
-        display: "flex",
-        flexWrap: "nowrap",
-        gap: 16,
-        overflowX: "auto",
-        "&::-webkit-scrollbar": {
-          display: "none",
-        },
-        paddingBottom: 4,
-        paddingTop: 4,
-      }}
-    >
-      {movies.map((movie: Movie) => (
-        <ImageListItem
-          key={movie.id}
-          sx={{
-            transition: "transform 0.3s, height 0.3s",
-            "&:hover": {
-              transform: "scale(1.2)",
-              zIndex: 1,
-              cursor: "pointer",
-            },
-          }}
-        >
-          <MovieCard movie={movie} />
-        </ImageListItem>
-      ))}
-    </ImageList>
-  );
+  return <MovieCard movies={movies} />;
 };
 
 export default MovieList;

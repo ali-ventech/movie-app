@@ -27,7 +27,6 @@ const MovieDetail: React.FC = () => {
           `https://yts.mx/api/v2/movie_details.json?movie_id=${id}&with_images=true&with_cast=true`
         );
         setMovie(response.data.data.movie);
-        console.log("Movie Response: ", response.data);
       } catch (err) {
         console.error("Error fetching movie details:", err);
         setError("Could not load movie details. Please try again later.");

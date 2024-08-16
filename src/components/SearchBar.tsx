@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Box, TextField, Autocomplete } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { addMovieToHistory } from "../redux/slices/searchHistorySlice";
+import { addMovieToHistory } from "../redux/slices/movieSlice";
 
 interface Movie {
   id: number;
   title: string;
   small_cover_image: string;
+  medium_cover_image: string;
 }
 
 const SearchBar: React.FC = () => {
@@ -17,6 +18,8 @@ const SearchBar: React.FC = () => {
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
     null
   );
+  const [isLoading, setIsLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -27,6 +30,7 @@ const SearchBar: React.FC = () => {
       }
 
       const newTimeout = setTimeout(async () => {
+        setIsLoading(true);
         try {
           const response = await axios.get(
             `https://yts.mx/api/v2/list_movies.json?query_term=${searchTerm}`
@@ -34,12 +38,15 @@ const SearchBar: React.FC = () => {
           setSearchResults(response.data.data.movies || []);
         } catch (error) {
           console.error("Error fetching search results:", error);
+        } finally {
+          setIsLoading(false);
         }
       }, 1000);
 
       setTypingTimeout(newTimeout);
     } else {
       setSearchResults([]);
+      setIsLoading(false);
     }
   }, [searchTerm]);
 
@@ -53,20 +60,25 @@ const SearchBar: React.FC = () => {
       setSearchTerm("");
       setSearchResults([]);
       dispatch(addMovieToHistory(value));
+      if (inputRef.current) {
+        inputRef.current.value = "";
+        inputRef.current.blur();
+      }
     }
   };
 
   return (
     <Autocomplete
-      clearOnBlur
       options={searchResults}
       getOptionLabel={(option: Movie) => option.title}
       onInputChange={handleSearchChange}
       onChange={handleSearchSelect}
       size="small"
+      noOptionsText={isLoading ? "Loading..." : "No Options"}
       renderInput={(params) => (
         <TextField
           {...params}
+          inputRef={inputRef}
           variant="outlined"
           fullWidth
           placeholder="Search for a movie..."

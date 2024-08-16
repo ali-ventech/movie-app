@@ -31,6 +31,7 @@ const Header: React.FC = () => {
         TV Shows
       </Typography>
       <Typography
+        onClick={() => navigate("/my-list")}
         sx={{ ":hover": { cursor: "pointer", textDecoration: "underline" } }}
       >
         My List
