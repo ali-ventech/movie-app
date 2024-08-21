@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import StarIcon from "@mui/icons-material/Star";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 import { Loader, MovieData, NoTrailer } from "../mui/styles";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
@@ -19,24 +21,34 @@ const MovieDetail: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchMovieDetail = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `https://yts.mx/api/v2/movie_details.json?movie_id=${id}&with_images=true&with_cast=true`
-        );
-        setMovie(response.data.data.movie);
-      } catch (err) {
-        console.error("Error fetching movie details:", err);
-        setError("Could not load movie details. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const myMovies = useSelector(
+    (state: RootState) => state.searchHistory.myMovies
+  );
 
-    fetchMovieDetail();
-  }, [id]);
+  useEffect(() => {
+    const localMovie = myMovies.find((m) => m.id === id);
+    if (localMovie) {
+      setMovie(localMovie);
+      setLoading(false);
+    } else {
+      const fetchMovieDetail = async () => {
+        try {
+          setLoading(true);
+          const response = await axios.get(
+            `https://yts.mx/api/v2/movie_details.json?movie_id=${id}&with_images=true&with_cast=true`
+          );
+          setMovie(response.data.data.movie);
+        } catch (err) {
+          console.error("Error fetching movie details:", err);
+          setError("Could not load movie details. Please try again later.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchMovieDetail();
+    }
+  }, [id, myMovies]);
 
   if (loading) {
     return <Loader />;
@@ -59,11 +71,12 @@ const MovieDetail: React.FC = () => {
       </Container>
     );
   }
+  console.log("Movie: ", movie);
 
   return (
     <Container sx={{ pt: 4 }}>
       <Typography sx={{ fontSize: { xs: 16, sm: 20, md: 28 } }} gutterBottom>
-        {movie.title} ({movie.year} )
+        {movie.title} ({movie.year})
       </Typography>
       <Grid container spacing={4}>
         <Grid item xs={12} md={4}>
@@ -115,7 +128,7 @@ const MovieDetail: React.FC = () => {
           <MovieData variant="body1">
             <strong>Cast:</strong>{" "}
             {movie.cast ? (
-              <> {movie?.cast?.map((actor: any) => actor.name).join(", ")}</>
+              <> {movie?.cast?.map((actor: any) => actor?.name).join(", ")}</>
             ) : (
               <Typography>Not added yet</Typography>
             )}

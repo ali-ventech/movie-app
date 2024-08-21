@@ -9,6 +9,7 @@ import SearchBar from "./components/SearchBar";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import MyList from "./pages/MyList";
+import AddMovie from "./pages/AddMovie";
 
 const darkTheme = createTheme({
   palette: {
@@ -29,6 +30,7 @@ const App: React.FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/movie/:id" element={<MovieDetailsPage />} />
           <Route path="/my-list" element={<MyList />} />
+          <Route path="/add-movie" element={<AddMovie />} />
         </Routes>
         {/* <Footer /> */}
       </Router>

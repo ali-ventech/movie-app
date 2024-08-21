@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "../store";
 interface Movie {
-  id: number;
+  id: string;
   title: string;
   medium_cover_image: string;
 }
@@ -10,12 +10,14 @@ interface movieState {
   movies: Movie[];
   initialFetched: boolean;
   favourites: Movie[];
+  myMovies: Movie[];
 }
 
 const initialState: movieState = {
   movies: [],
   initialFetched: false,
   favourites: [],
+  myMovies: [],
 };
 
 const movieSlice = createSlice({
@@ -49,9 +51,17 @@ const movieSlice = createSlice({
         ];
       }
     },
+    addMovie(state: movieState, action: PayloadAction<Movie>) {
+      const movie = action.payload;
+      state.myMovies = [movie, ...state.myMovies];
+    },
   },
 });
 
-export const { addMovieToHistory, setInitialMovies, addToFavourites } =
-  movieSlice.actions;
+export const {
+  addMovieToHistory,
+  setInitialMovies,
+  addToFavourites,
+  addMovie,
+} = movieSlice.actions;
 export default movieSlice.reducer;

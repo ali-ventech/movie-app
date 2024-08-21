@@ -7,7 +7,7 @@ import axios from "axios";
 import { setInitialMovies } from "../redux/slices/movieSlice";
 
 interface Movie {
-  id: number;
+  id: string;
   title: string;
   medium_cover_image: string;
 }

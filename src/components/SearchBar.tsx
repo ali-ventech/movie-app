@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { addMovieToHistory } from "../redux/slices/movieSlice";
 
 interface Movie {
-  id: number;
+  id: string;
   title: string;
   small_cover_image: string;
   medium_cover_image: string;
@@ -69,6 +69,7 @@ const SearchBar: React.FC = () => {
 
   return (
     <Autocomplete
+      clearOnBlur={false}
       options={searchResults}
       getOptionLabel={(option: Movie) => option.title}
       onInputChange={handleSearchChange}

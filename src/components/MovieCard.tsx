@@ -13,7 +13,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 
 interface Movie {
-  id: number;
+  id: string;
   title: string;
   medium_cover_image: string;
 }
