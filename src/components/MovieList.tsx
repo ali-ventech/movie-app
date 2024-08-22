@@ -10,6 +10,7 @@ interface Movie {
   id: string;
   title: string;
   medium_cover_image: string;
+  small_cover_image: string;
 }
 
 const MovieList: React.FC = () => {

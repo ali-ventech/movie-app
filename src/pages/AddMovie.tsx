@@ -235,7 +235,7 @@ const MovieForm: React.FC = () => {
               component="div"
               sx={(theme) => ({
                 height: "100%",
-                width: 100,
+                width: 140,
                 cursor: "pointer",
                 position: "relative",
                 borderRadius: 2,
@@ -258,10 +258,10 @@ const MovieForm: React.FC = () => {
                 />
               ) : (
                 <>
-                  <InsertPhoto
-                    sx={{ marginY: 5, fontSize: 130, opacity: "50%" }}
-                  />
-                  <Typography>Click to insert an image</Typography>
+                  <InsertPhoto sx={{ fontSize: 130, opacity: "50%" }} />
+                  <Typography fontSize="small">
+                    Click to insert an image
+                  </Typography>
                   {imageError && (
                     <Typography
                       sx={{

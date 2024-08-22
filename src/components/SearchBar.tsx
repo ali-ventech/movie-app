@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Box, TextField, Autocomplete } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addMovieToHistory } from "../redux/slices/movieSlice";
+import { RootState } from "../redux/store";
 
 interface Movie {
   id: string;
@@ -23,6 +24,10 @@ const SearchBar: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const myMovies = useSelector(
+    (state: RootState) => state.searchHistory.myMovies
+  );
+
   useEffect(() => {
     if (searchTerm) {
       if (typingTimeout) {
@@ -32,10 +37,19 @@ const SearchBar: React.FC = () => {
       const newTimeout = setTimeout(async () => {
         setIsLoading(true);
         try {
-          const response = await axios.get(
-            `https://yts.mx/api/v2/list_movies.json?query_term=${searchTerm}`
+          const storeResults = myMovies.filter((movie) =>
+            movie.title.toLowerCase().includes(searchTerm.toLowerCase())
           );
-          setSearchResults(response.data.data.movies || []);
+          if (storeResults.length < 5) {
+            const response = await axios.get(
+              `https://yts.mx/api/v2/list_movies.json?query_term=${searchTerm}`
+            );
+            const apiResults = response.data.data.movies || [];
+            const results = [...storeResults, ...apiResults].slice(0, 5);
+            setSearchResults(results);
+          } else {
+            setSearchResults(storeResults.slice(0, 5));
+          }
         } catch (error) {
           console.error("Error fetching search results:", error);
         } finally {
@@ -48,18 +62,18 @@ const SearchBar: React.FC = () => {
       setSearchResults([]);
       setIsLoading(false);
     }
-  }, [searchTerm]);
+  }, [searchTerm, myMovies]);
 
   const handleSearchChange = (event: any, newValue: string) => {
     setSearchTerm(newValue);
   };
 
-  const handleSearchSelect = (event: any, value: Movie | null) => {
+  const handleSearchSelect = (event: any, value: Movie | string | null) => {
     if (value) {
-      navigate(`/movie/${value.id}`);
+      navigate(`/movie/${(value as Movie).id}`);
       setSearchTerm("");
       setSearchResults([]);
-      dispatch(addMovieToHistory(value));
+      dispatch(addMovieToHistory(value as Movie));
       if (inputRef.current) {
         inputRef.current.value = "";
         inputRef.current.blur();
@@ -69,9 +83,10 @@ const SearchBar: React.FC = () => {
 
   return (
     <Autocomplete
-      clearOnBlur={false}
+      // clearOnBlur={false}
+      freeSolo
       options={searchResults}
-      getOptionLabel={(option: Movie) => option.title}
+      getOptionLabel={(option: Movie | string) => (option as Movie).title}
       onInputChange={handleSearchChange}
       onChange={handleSearchSelect}
       size="small"
