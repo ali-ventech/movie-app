@@ -9,19 +9,7 @@ import { addMovie } from "../redux/slices/movieSlice";
 import { InsertPhoto } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
-interface Movie {
-  id: string;
-  title: string;
-  year: number;
-  description: string;
-  rating: number;
-  cast: { name: string }[];
-  runtime: string;
-  medium_cover_image: string;
-  large_cover_image: string;
-  small_cover_image: string;
-}
+import { Movie } from "../types.ts/movieType";
 
 interface MovieFormInput {
   title: string;
@@ -31,6 +19,7 @@ interface MovieFormInput {
   cast: string;
   runtime: string;
   medium_cover_image: string;
+  background_image: string;
 }
 
 const schema = Joi.object({
@@ -54,7 +43,7 @@ const MovieForm: React.FC = () => {
   const navigate = useNavigate();
 
   const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
-  const FILE_SIZE = 2 * 1024 * 1024;
+  const FILE_SIZE = 1024 * 1024;
 
   const handleDivClick = () => {
     if (fileInputRef.current) {
@@ -239,10 +228,6 @@ const MovieForm: React.FC = () => {
                 cursor: "pointer",
                 position: "relative",
                 borderRadius: 2,
-                scrollbarGutter: "stable",
-                [theme.breakpoints.down("md")]: {
-                  flexBasis: 6,
-                },
               })}
               onClick={handleDivClick}
             >
@@ -263,11 +248,7 @@ const MovieForm: React.FC = () => {
                     Click to insert an image
                   </Typography>
                   {imageError && (
-                    <Typography
-                      sx={{
-                        color: "red",
-                      }}
-                    >
+                    <Typography fontSize="small" color={"red"}>
                       {imageError}
                     </Typography>
                   )}

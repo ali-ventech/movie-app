@@ -39,3 +39,21 @@ export const MovieData = styled(Typography)(({ theme }) => ({
   alignItems: "flex-start",
   gap: theme.spacing(0.5),
 }));
+
+export const CarouselImage = styled("img")(({ theme }) => ({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "auto",
+  opacity: 0.6,
+  transition: "opacity 1s ease-in-out",
+}));
+
+export const CarouselData = styled(Box)(({ theme }) => ({
+  position: "absolute",
+  top: "35%",
+  left: "5%",
+  opacity: 0.9,
+  transition: "opacity 1s ease-in-out",
+}));

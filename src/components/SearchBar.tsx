@@ -5,13 +5,8 @@ import { Box, TextField, Autocomplete } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { addMovieToHistory } from "../redux/slices/movieSlice";
 import { RootState } from "../redux/store";
-
-interface Movie {
-  id: string;
-  title: string;
-  small_cover_image: string;
-  medium_cover_image: string;
-}
+import { sortMovies } from "../utils/sortMovies";
+import { Movie } from "../types.ts/movieType";
 
 const SearchBar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -40,16 +35,17 @@ const SearchBar: React.FC = () => {
           const storeResults = myMovies.filter((movie) =>
             movie.title.toLowerCase().includes(searchTerm.toLowerCase())
           );
-          if (storeResults.length < 5) {
+
+          const apiResults = [];
+          if (storeResults.length < 10) {
             const response = await axios.get(
               `https://yts.mx/api/v2/list_movies.json?query_term=${searchTerm}`
             );
-            const apiResults = response.data.data.movies || [];
-            const results = [...storeResults, ...apiResults].slice(0, 5);
-            setSearchResults(results);
-          } else {
-            setSearchResults(storeResults.slice(0, 5));
+            apiResults.push(...(response.data.data.movies || []));
           }
+          const combined = [...storeResults, ...apiResults];
+          const sortedResults = sortMovies(combined, searchTerm);
+          setSearchResults(sortedResults.slice(0, 10));
         } catch (error) {
           console.error("Error fetching search results:", error);
         } finally {
@@ -83,7 +79,6 @@ const SearchBar: React.FC = () => {
 
   return (
     <Autocomplete
-      // clearOnBlur={false}
       freeSolo
       options={searchResults}
       getOptionLabel={(option: Movie | string) => (option as Movie).title}

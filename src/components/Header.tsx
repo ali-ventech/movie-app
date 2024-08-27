@@ -12,7 +12,13 @@ const Header: React.FC = () => {
 
   return (
     <Container
-      sx={{ display: "flex", alignItems: "center", gap: 3, paddingTop: 2 }}
+      sx={{
+        display: "flex",
+        position: "relative",
+        alignItems: "center",
+        gap: 3,
+        paddingTop: 2,
+      }}
     >
       <Box
         component="img"

@@ -9,13 +9,14 @@ const HomePage: React.FC = () => {
   const myMovies = useSelector(
     (state: RootState) => state.searchHistory.myMovies
   );
-  console.log("My Movies: ", myMovies);
   return (
-    <Container sx={{ pt: 4 }}>
-      <Typography variant="h4">Movies</Typography>
+    <Container sx={{ pt: 18 }}>
+      <Typography sx={{ marginBottom: -4, position: "relative" }}>
+        Recent Movies
+      </Typography>
       <MovieList />
-      <Typography variant="h4">My Movies</Typography>
-      <MovieCard movies={myMovies} />;
+      <Typography sx={{ marginBottom: -4 }}>My Movies</Typography>
+      <MovieCard movies={myMovies} />
     </Container>
   );
 };

@@ -11,13 +11,7 @@ import { addMovieToHistory, addToFavourites } from "../redux/slices/movieSlice";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
-
-interface Movie {
-  id: string;
-  title: string;
-  medium_cover_image: string;
-  small_cover_image: string;
-}
+import { Movie } from "../types.ts/movieType";
 
 interface MovieCardProps {
   movies: Movie[];
@@ -44,7 +38,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movies }) => {
     <ImageList
       sx={{
         display: "flex",
-        flexWrap: "nowrap",
         gap: 16,
         overflowX: "auto",
         "&::-webkit-scrollbar": {
@@ -60,7 +53,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movies }) => {
           sx={{
             transition: "transform 0.3s, height 0.3s",
             "&:hover": {
-              transform: "scale(1.2)",
+              transform: "scale(1.12)",
               zIndex: 1,
               cursor: "pointer",
             },
@@ -76,7 +69,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movies }) => {
                 transition: "transform .2s ease-in-out",
                 margin: "0 auto",
                 width: { xs: 100, sm: 120, md: 140, lg: 160 },
-                height: "100%",
+                height: { xs: 150, sm: 180, md: 210, lg: 240 },
                 objectFit: "cover",
               }}
               onClick={() => handleCardClick(movie)}

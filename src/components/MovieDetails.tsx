@@ -22,7 +22,7 @@ const MovieDetail: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const myMovies = useSelector(
-    (state: RootState) => state.searchHistory.myMovies
+    (state: RootState) => state.searchHistory.movies
   );
 
   useEffect(() => {

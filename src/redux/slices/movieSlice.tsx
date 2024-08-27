@@ -1,17 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "../store";
-interface Movie {
-  id: string;
-  title: string;
-  medium_cover_image: string;
-  small_cover_image: string;
-}
+import { Movie } from "../../types.ts/movieType";
 
 interface movieState {
   movies: Movie[];
   initialFetched: boolean;
   favourites: Movie[];
   myMovies: Movie[];
+  courselIndex: number;
 }
 
 const initialState: movieState = {
@@ -19,6 +15,7 @@ const initialState: movieState = {
   initialFetched: false,
   favourites: [],
   myMovies: [],
+  courselIndex: 0,
 };
 
 const movieSlice = createSlice({
@@ -56,6 +53,9 @@ const movieSlice = createSlice({
       const movie = action.payload;
       state.myMovies = [movie, ...state.myMovies];
     },
+    setCourselIndex(state, action: PayloadAction<number>) {
+      state.courselIndex = action.payload;
+    },
   },
 });
 
@@ -64,5 +64,6 @@ export const {
   setInitialMovies,
   addToFavourites,
   addMovie,
+  setCourselIndex,
 } = movieSlice.actions;
 export default movieSlice.reducer;

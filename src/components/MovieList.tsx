@@ -1,17 +1,10 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
-import { ImageList, ImageListItem } from "@mui/material";
 import MovieCard from "./MovieCard";
 import axios from "axios";
 import { setInitialMovies } from "../redux/slices/movieSlice";
-
-interface Movie {
-  id: string;
-  title: string;
-  medium_cover_image: string;
-  small_cover_image: string;
-}
+import { Movie } from "../types.ts/movieType";
 
 const MovieList: React.FC = () => {
   const dispatch = useDispatch();
